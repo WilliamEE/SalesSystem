@@ -160,6 +160,10 @@ namespace APISalesSystem
                     .HasColumnName("referenciaBancariaUrl")
                     .HasMaxLength(400)
                     .IsUnicode(false);
+
+                entity.Property(e => e.id_Usuario)
+                    .HasMaxLength(400)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Usuario>(entity =>

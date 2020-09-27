@@ -2,9 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>8a7a5f69-63c2-4664-8e1c-62b1af51cc95</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200927182917_Migracion para agregar id_usuario.cs" />
+    <Compile Remove="Migrations\20200927182917_Migracion para agregar id_usuario.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FirebaseAdmin" Version="1.16.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
       <PrivateAssets>all</PrivateAssets>
