@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "inx7Yrpe2lIUCKED0MmjlQtLTxSk+6o2aX+EAdGZxZ/kQ5VkGLNdMU/URpuqfS1UOEVocTRjEssORjPxwBKNUA==",
+  "dgSpecHash": "OIHg9ihSzLfNJtVdwoX1ApC9b+WR8wW/srXOEZ6LXxUVWd6tEtsFq4K0Oc++GHBtLkz8QWpGKFW5u3gCOkM20g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\willi\\OneDrive\\Escritorio\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
+  "projectFilePath": "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\willi\\.nuget\\packages\\microsoft.aspnet.webapi.client\\4.0.20710\\microsoft.aspnet.webapi.client.4.0.20710.nupkg.sha512",
     "C:\\Users\\willi\\.nuget\\packages\\microsoft.aspnet.webapi.core\\4.0.20710\\microsoft.aspnet.webapi.core.4.0.20710.nupkg.sha512",

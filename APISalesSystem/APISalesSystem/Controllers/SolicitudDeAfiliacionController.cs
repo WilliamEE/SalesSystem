@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APISalesSystem;
+using System.IO;
 
 namespace APISalesSystem.Controllers
 {
@@ -22,9 +23,18 @@ namespace APISalesSystem.Controllers
 
         // GET: api/SolicitudDeAfiliacion
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SolicitudDeAfiliacion>>> GetSolicitudDeAfiliacion()
+        public async Task<ActionResult<IEnumerable<SolicitudDeAfiliacion>>> GetSolicitudDeAfiliacion([FromQuery] int pagina, [FromQuery] int cantidad)
         {
-            return await _context.SolicitudDeAfiliacion.ToListAsync();
+            List<SolicitudDeAfiliacion> solicitud;
+            if (pagina != 0 && cantidad != 0)
+            {
+                solicitud = await _context.SolicitudDeAfiliacion.Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
+            }
+            else
+            {
+                solicitud = await _context.SolicitudDeAfiliacion.ToListAsync();
+            }
+            return solicitud;
         }
 
         // GET: api/SolicitudDeAfiliacion/5
@@ -51,7 +61,12 @@ namespace APISalesSystem.Controllers
             {
                 return BadRequest();
             }
-
+            string[] valores = imagenes(solicitudDeAfiliacion, 1); ;
+            solicitudDeAfiliacion.PagareUrl = valores[0];
+            solicitudDeAfiliacion.ReciboAguaUrl = valores[1];
+            solicitudDeAfiliacion.ReciboLuzUrl = valores[2];
+            solicitudDeAfiliacion.ReciboTelefonoUrl = valores[3];
+            solicitudDeAfiliacion.ReferenciaBancariaUrl = valores[4];
             _context.Entry(solicitudDeAfiliacion).State = EntityState.Modified;
 
             try
@@ -79,6 +94,12 @@ namespace APISalesSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<SolicitudDeAfiliacion>> PostSolicitudDeAfiliacion(SolicitudDeAfiliacion solicitudDeAfiliacion)
         {
+            string[] valores = imagenes(solicitudDeAfiliacion, 1); ;
+            solicitudDeAfiliacion.PagareUrl = valores[0];
+            solicitudDeAfiliacion.ReciboAguaUrl = valores[1];
+            solicitudDeAfiliacion.ReciboLuzUrl = valores[2];
+            solicitudDeAfiliacion.ReciboTelefonoUrl = valores[3];
+            solicitudDeAfiliacion.ReferenciaBancariaUrl = valores[4];
             _context.SolicitudDeAfiliacion.Add(solicitudDeAfiliacion);
             await _context.SaveChangesAsync();
 
@@ -95,6 +116,7 @@ namespace APISalesSystem.Controllers
                 return NotFound();
             }
 
+            imagenes(solicitudDeAfiliacion, 2);
             _context.SolicitudDeAfiliacion.Remove(solicitudDeAfiliacion);
             await _context.SaveChangesAsync();
 
@@ -105,5 +127,59 @@ namespace APISalesSystem.Controllers
         {
             return _context.SolicitudDeAfiliacion.Any(e => e.Id == id);
         }
+
+
+        private string[] imagenes(SolicitudDeAfiliacion solicitud, int modo)
+        {
+
+            string filtePath = Path.GetFullPath(@"Images/DocumentosSolicitud");
+            if (modo > 0)
+            {
+                SolicitudDeAfiliacion imagen_cambiar = _context.SolicitudDeAfiliacion.Find(solicitud.Id);
+                string[] rutas = new string[] { imagen_cambiar.PagareUrl, imagen_cambiar.ReciboAguaUrl, imagen_cambiar.ReciboLuzUrl, imagen_cambiar.ReciboTelefonoUrl, imagen_cambiar.ReferenciaBancariaUrl };
+                for (int i = 0; i < 5; i++)
+                {
+                    string ruta_seleccionada = rutas[i];
+                    if (ruta_seleccionada != "" && ruta_seleccionada != null && ruta_seleccionada.Length > 38)
+                    {
+                        //Es importante contar cuantos caracteres tiene antes de la ultima pleca en la ruta almacenada en base de datos
+                        ruta_seleccionada = ruta_seleccionada.Remove(0, 38);
+                        System.IO.File.Delete(filtePath + "\\" + ruta_seleccionada);
+                    }
+                }
+                
+                _context.Entry(imagen_cambiar).State = EntityState.Detached;
+            }
+            if (modo < 2)
+            {
+                
+                //string imagenBase = solicitud.ImagenUrl;
+                string[] rutas = new string[] { solicitud.PagareUrl, solicitud.ReciboAguaUrl, solicitud.ReciboLuzUrl, solicitud.ReciboTelefonoUrl, solicitud.ReferenciaBancariaUrl };
+                string[] valores_documentos = new string[5];
+                for (int i = 0; i < 5; i++)
+                {
+                    //Agregando imagen a carpeta
+                    Guid nombreImagen = Guid.NewGuid();
+                    string rutaImagen = filtePath + "\\" + nombreImagen + ".png";
+                    string ruta_base = rutas[i];
+                    if (ruta_base != "" && ruta_base != null)
+                    {
+                        //imagenBase = imagenBase.RutaImagem.Remove(0, 22);
+                        byte[] archivoBase64 = Convert.FromBase64String(ruta_base);
+                        System.IO.File.WriteAllBytes(rutaImagen, archivoBase64);
+
+                        valores_documentos[i] = "/Images/DocumentosSolicitud/" + nombreImagen + ".png";
+                        
+                    }
+                }
+                return valores_documentos;
+
+            }
+
+            string[] retorno = new string[0];
+            return retorno ;
+        }
+
+
     }
 }

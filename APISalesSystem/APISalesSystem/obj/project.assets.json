@@ -9114,11 +9114,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\willi\\OneDrive\\Escritorio\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
+      "projectUniqueName": "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
       "projectName": "APISalesSystem",
-      "projectPath": "C:\\Users\\willi\\OneDrive\\Escritorio\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
+      "projectPath": "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
       "packagesPath": "C:\\Users\\willi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\willi\\OneDrive\\Escritorio\\APISalesSystem\\APISalesSystem\\obj\\",
+      "outputPath": "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\willi\\AppData\\Roaming\\NuGet\\NuGet.Config",

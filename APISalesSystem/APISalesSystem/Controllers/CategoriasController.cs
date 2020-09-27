@@ -22,9 +22,19 @@ namespace APISalesSystem.Controllers
 
         // GET: api/Categorias
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria()
+        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria([FromQuery] int pagina, [FromQuery] int cantidad)
         {
-            return await _context.Categoria.ToListAsync();
+            //return await _context.Categoria.ToListAsync();
+            List<Categoria> categorias;
+            if (pagina != 0 && cantidad != 0)
+            {
+                categorias = await _context.Categoria.Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
+            }
+            else
+            {
+                categorias = await _context.Categoria.ToListAsync();
+            }
+            return categorias;
         }
 
         // GET: api/Categorias/5
