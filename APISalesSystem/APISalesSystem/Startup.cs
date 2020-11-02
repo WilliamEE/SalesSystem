@@ -1,24 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.IIS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.Swagger;
 
 namespace APISalesSystem
 {
@@ -34,6 +29,8 @@ namespace APISalesSystem
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddTransient<IClaimsTransformation, IClaimsTransformation>();
+            services.AddAuthentication(IISServerDefaults.AuthenticationScheme);
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -56,14 +53,29 @@ namespace APISalesSystem
                 .AllowAnyMethod()
                 ));
 
+            
+
             services.AddControllers();
 
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = "https://securetoken.google.com/dsi215";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = "https://securetoken.google.com/dsi215",
+                        ValidateAudience = true,
+                        ValidAudience = "dsi215",
+                        ValidateLifetime = true
+                    };
+                });
             string path = Path.GetFullPath(@"config");
             FirebaseApp.Create(new AppOptions()
             {
                 Credential = GoogleCredential.FromFile(path + "\\firebase-dsi215.json"),
             });
-
 
         }
 
@@ -75,11 +87,15 @@ namespace APISalesSystem
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+
             app.UseCors("AllowWebApp");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -100,6 +116,8 @@ namespace APISalesSystem
             {
                 endpoints.MapControllers();
             });
+
+            
         }
     }
 }

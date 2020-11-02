@@ -10,13 +10,19 @@ using System.IO;
 using FirebaseAdmin.Auth;
 using SQLitePCL;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APISalesSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SolicitudDeAfiliacionController : ControllerBase
     {
+        UsuarioFirebaseDecodificado autenticar = new UsuarioFirebaseDecodificado();
+        UsuarioFirebase usuario = new UsuarioFirebase();
         private readonly DbSalesSystemContext _context;
 
         public SolicitudDeAfiliacionController(DbSalesSystemContext context)
@@ -26,38 +32,30 @@ namespace APISalesSystem.Controllers
 
         // GET: api/SolicitudDeAfiliacion
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SolicitudDeAfiliacion>>> GetSolicitudDeAfiliacion([FromQuery] string token, [FromQuery] int pagina, [FromQuery] int cantidad)
+        public async Task<ActionResult<IEnumerable<SolicitudDeAfiliacion>>> GetSolicitudDeAfiliacion([FromQuery] int pagina, [FromQuery] int cantidad, [FromHeader] string Authorization)
         {
-            string idToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlNjYzOGY4NDlkODVhNWVkMGQ1M2NkNDI1MzE0Y2Q1MGYwYjY1YWUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiQ2FybG9zIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2RzaTIxNSIsImF1ZCI6ImRzaTIxNSIsImF1dGhfdGltZSI6MTYwMTE0ODAwOSwidXNlcl9pZCI6IjFieVVuMnV2WFhNWTdJeWpMZExBNDVNT2hMUzIiLCJzdWIiOiIxYnlVbjJ1dlhYTVk3SXlqTGRMQTQ1TU9oTFMyIiwiaWF0IjoxNjAxMjQzNzYzLCJleHAiOjE2MDEyNDczNjMsImVtYWlsIjoibW9yYW5fa3Jsb3NAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibW9yYW5fa3Jsb3NAaG90bWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.UkvIe3U4insA6MyA4bqXamggpdjEAfMJANxlC4_tC2fKGn2nPnFW9uirzNZ6j7bfHUVoF0usryVmV1C_Nfia3esboZTyRvoPMW2_9tdeSwl_ah4pQTef8FpAjqX1xtKRRv2UX7zaJOvWboKaL8OhEcdwhrYdeOF2AfrBkBOIHYYgInmVjs3m2EWgRVFtSuhbX7EJ8qRRdg31Y2c-GaKjg_CpXpy5XRkdLqwuhWZWOH9ZtvdkTkExj2xrnkfMbinOqOohrl1zJDNl5nBiDyCHYDLI_hnNT57KUbgNbNkPcW-e5k2OsnvbZHCGc39XVlkBZLwvchoV4Huj0RGAJVFnFA";
-            //string idToken = token;
-            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
-            string uid = decodedToken.Uid;
-            var claims = decodedToken.Claims;
-            bool isAdmin = false;
-            if (claims["admin"] != null)
-            {
-            isAdmin = Convert.ToBoolean(claims["admin"]);
-            }
+            string idToken = Authorization.Remove(0, 7);
+            usuario = await autenticar.obtener_usuario(idToken);
 
-            List<SolicitudDeAfiliacion> solicitud;
-            if (isAdmin) { 
-            if (pagina != 0 && cantidad != 0)
-            {
-                solicitud = await _context.SolicitudDeAfiliacion.Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
-            }
-            else
-            {
-                solicitud = await _context.SolicitudDeAfiliacion.ToListAsync();
-            }
-            }
-            else 
-            {
-                solicitud = new List<SolicitudDeAfiliacion>();
-            }
-            
-            return solicitud;
+            List<SolicitudDeAfiliacion> solicitud = new List<SolicitudDeAfiliacion>();
+                if (usuario.admin)
+                {
+                    if (pagina != 0 && cantidad != 0)
+                    {
+                        solicitud = await _context.SolicitudDeAfiliacion.Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
+                    }
+                    else
+                    {
+                        solicitud = await _context.SolicitudDeAfiliacion.ToListAsync();
+                    }
+                    return solicitud;
+                }
+                else
+                {
+                //solicitud = await _context.SolicitudDeAfiliacion.Where(c =>c.id_Usuario == usuario.Uid).FirstOrDefaultAsync();
+                return solicitud;
+                }
         }
-
         // GET: api/SolicitudDeAfiliacion/5
         [HttpGet("porId")]
         public async Task<ActionResult<SolicitudDeAfiliacion>> GetSolicitudDeAfiliacionId([FromQuery] string token)
@@ -155,6 +153,27 @@ namespace APISalesSystem.Controllers
             return solicitudDeAfiliacion;
         }
 
+        // DELETE: api/SolicitudDeAfiliacion/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<SolicitudDeAfiliacion>> AprobarDenegarSolicitud(int id)
+        {
+            //string idToken = solicitudDeAfiliacion.id_Usuario;
+            string idToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlNjYzOGY4NDlkODVhNWVkMGQ1M2NkNDI1MzE0Y2Q1MGYwYjY1YWUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiQ2FybG9zIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2RzaTIxNSIsImF1ZCI6ImRzaTIxNSIsImF1dGhfdGltZSI6MTYwMTE0ODAwOSwidXNlcl9pZCI6IjFieVVuMnV2WFhNWTdJeWpMZExBNDVNT2hMUzIiLCJzdWIiOiIxYnlVbjJ1dlhYTVk3SXlqTGRMQTQ1TU9oTFMyIiwiaWF0IjoxNjAxMjQzNzYzLCJleHAiOjE2MDEyNDczNjMsImVtYWlsIjoibW9yYW5fa3Jsb3NAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibW9yYW5fa3Jsb3NAaG90bWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.UkvIe3U4insA6MyA4bqXamggpdjEAfMJANxlC4_tC2fKGn2nPnFW9uirzNZ6j7bfHUVoF0usryVmV1C_Nfia3esboZTyRvoPMW2_9tdeSwl_ah4pQTef8FpAjqX1xtKRRv2UX7zaJOvWboKaL8OhEcdwhrYdeOF2AfrBkBOIHYYgInmVjs3m2EWgRVFtSuhbX7EJ8qRRdg31Y2c-GaKjg_CpXpy5XRkdLqwuhWZWOH9ZtvdkTkExj2xrnkfMbinOqOohrl1zJDNl5nBiDyCHYDLI_hnNT57KUbgNbNkPcW-e5k2OsnvbZHCGc39XVlkBZLwvchoV4Huj0RGAJVFnFA";
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
+            string uid = decodedToken.Uid;
+            var solicitudDeAfiliacion = await _context.SolicitudDeAfiliacion.FindAsync(id);
+            if (solicitudDeAfiliacion == null)
+            {
+                return NotFound();
+            }
+
+            imagenes(solicitudDeAfiliacion, 2);
+            _context.SolicitudDeAfiliacion.Remove(solicitudDeAfiliacion);
+            await _context.SaveChangesAsync();
+
+            return solicitudDeAfiliacion;
+        }
+
         private bool SolicitudDeAfiliacionExists(int id)
         {
             return _context.SolicitudDeAfiliacion.Any(e => e.Id == id);
@@ -179,12 +198,12 @@ namespace APISalesSystem.Controllers
                         System.IO.File.Delete(filtePath + "\\" + ruta_seleccionada);
                     }
                 }
-                
+
                 _context.Entry(imagen_cambiar).State = EntityState.Detached;
             }
             if (modo < 2)
             {
-                
+
                 //string imagenBase = solicitud.ImagenUrl;
                 string[] rutas = new string[] { solicitud.PagareUrl, solicitud.ReciboAguaUrl, solicitud.ReciboLuzUrl, solicitud.ReciboTelefonoUrl, solicitud.ReferenciaBancariaUrl };
                 string[] valores_documentos = new string[5];
@@ -201,7 +220,7 @@ namespace APISalesSystem.Controllers
                         System.IO.File.WriteAllBytes(rutaImagen, archivoBase64);
 
                         valores_documentos[i] = "/Images/DocumentosSolicitud/" + nombreImagen + ".png";
-                        
+
                     }
                 }
                 return valores_documentos;
@@ -209,10 +228,9 @@ namespace APISalesSystem.Controllers
             }
 
             string[] retorno = new string[0];
-            return retorno ;
+            return retorno;
         }
 
-        
 
     }
 }

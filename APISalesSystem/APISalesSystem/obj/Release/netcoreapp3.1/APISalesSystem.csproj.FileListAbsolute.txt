@@ -150,9 +150,6 @@ C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.csprojAssemblyReference.cache
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.AssemblyInfoInputs.cache
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.AssemblyInfo.cs
-C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.csproj.CoreCompileInputs.cache
-C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.RazorTargetAssemblyInfo.cache
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.csproj.CopyComplete
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\staticwebassets\APISalesSystem.StaticWebAssets.Manifest.cache
@@ -160,3 +157,16 @@ C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.dll
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.pdb
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.genruntimeconfig.cache
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Config\firebase-dsi215.json
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\FirebaseAdmin.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Google.Api.Gax.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Google.Api.Gax.Rest.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Google.Apis.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Google.Apis.Auth.PlatformServices.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Google.Apis.Auth.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Google.Apis.Core.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\System.Interactive.Async.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.csproj.CoreCompileInputs.cache
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Release\netcoreapp3.1\APISalesSystem.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Release\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll

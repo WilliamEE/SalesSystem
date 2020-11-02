@@ -26,8 +26,9 @@ namespace APISalesSystem
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=Desktop-DiCQEL7\\dsi215;Initial Catalog=DbSalesSystem;Integrated Security=True");
+                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                //optionsBuilder.UseSqlServer("Data Source=desktop-dicqel7\\dsi215;Initial Catalog=DbSalesSystem;User ID=sales;Password=1234");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-C2NASPK;Initial Catalog=DbSalesSystem;User ID=sales;Password=1234");
             }
         }
 
