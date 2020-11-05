@@ -17,8 +17,11 @@ namespace APISalesSystem.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductosController : ControllerBase
     {
+        UsuarioFirebaseDecodificado autenticar = new UsuarioFirebaseDecodificado();
+        UsuarioFirebase usuario = new UsuarioFirebase();
         private readonly DbSalesSystemContext _context;
 
         public ProductosController(DbSalesSystemContext context)
@@ -28,60 +31,140 @@ namespace APISalesSystem.Controllers
 
         // GET: api/Productos
         [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<Producto>>> GetProducto([FromQuery] int pagina, [FromQuery] int cantidad, [FromQuery] int categoria)
+        public async Task<ActionResult<IEnumerable<Producto>>> GetProducto([FromQuery] int pagina, [FromQuery] int cantidad, [FromQuery] int categoria, [FromHeader] String Authorization)
         {
-            //return await _context.Producto.ToListAsync();
-            //string idToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlNjYzOGY4NDlkODVhNWVkMGQ1M2NkNDI1MzE0Y2Q1MGYwYjY1YWUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiQ2FybG9zIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2RzaTIxNSIsImF1ZCI6ImRzaTIxNSIsImF1dGhfdGltZSI6MTYwMTE0ODAwOSwidXNlcl9pZCI6IjFieVVuMnV2WFhNWTdJeWpMZExBNDVNT2hMUzIiLCJzdWIiOiIxYnlVbjJ1dlhYTVk3SXlqTGRMQTQ1TU9oTFMyIiwiaWF0IjoxNjAxMjQzNzYzLCJleHAiOjE2MDEyNDczNjMsImVtYWlsIjoibW9yYW5fa3Jsb3NAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsibW9yYW5fa3Jsb3NAaG90bWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.UkvIe3U4insA6MyA4bqXamggpdjEAfMJANxlC4_tC2fKGn2nPnFW9uirzNZ6j7bfHUVoF0usryVmV1C_Nfia3esboZTyRvoPMW2_9tdeSwl_ah4pQTef8FpAjqX1xtKRRv2UX7zaJOvWboKaL8OhEcdwhrYdeOF2AfrBkBOIHYYgInmVjs3m2EWgRVFtSuhbX7EJ8qRRdg31Y2c-GaKjg_CpXpy5XRkdLqwuhWZWOH9ZtvdkTkExj2xrnkfMbinOqOohrl1zJDNl5nBiDyCHYDLI_hnNT57KUbgNbNkPcW-e5k2OsnvbZHCGc39XVlkBZLwvchoV4Huj0RGAJVFnFA";
-            //FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
-            //string uid = decodedToken.Uid;
+            string idToken = Authorization.Remove(0, 7);
+            usuario = await autenticar.obtener_usuario(idToken);
 
-            List<Producto> documentoLegal;
+            List<Producto> producto = new List<Producto>();
+            //if (usuario.admin)
+            //{
             if (pagina != 0 && cantidad != 0)
             {
-                documentoLegal = await _context.Producto.Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
+                producto = await _context.Producto.Where(c => c.Activo == true).Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
             }
             else
             {
-                documentoLegal = await _context.Producto.ToListAsync();
+                producto = await _context.Producto.Where(c => c.Activo == true).ToListAsync();
             }
 
             if (categoria != 0)
             {
-                     documentoLegal = documentoLegal.Where(data => data.IdCategoria.ToString().Contains(categoria.ToString())).ToList();
+                producto = producto.Where(data => data.Activo == true && data.IdCategoria.ToString().Contains(categoria.ToString())).ToList();
             }
-            return documentoLegal;
-        }
-
-        // GET: api/Productos/5
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<Producto>> GetProducto(int id)
-        {
-            var producto = await _context.Producto.FindAsync(id);
-
-            if (producto == null)
-            {
-                return NotFound();
-            }
-
             return producto;
         }
 
-        // PUT: api/Productos/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducto(int id, Producto producto)
+        [HttpGet]
+        [Route("ProductoVendedor")]
+        public async Task<ActionResult<IEnumerable<Producto>>> GetProductoVendedor([FromQuery] int pagina, [FromQuery] int cantidad, [FromQuery] int categoria, [FromHeader] String Authorization)
         {
-            if (id != producto.Id)
+            string idToken = Authorization.Remove(0, 7);
+            usuario = await autenticar.obtener_usuario(idToken);
+
+            List<Producto> producto = new List<Producto>();
+            
+                if (pagina != 0 && cantidad != 0)
+                {
+                    producto = await _context.Producto.Where(c => c.IdUsuario == usuario.Uid && c.Activo == true).Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
+                }
+                else
+                {
+                    producto = await _context.Producto.Where(c => c.IdUsuario == usuario.Uid && c.Activo == true).ToListAsync();
+                }
+
+                if (categoria != 0)
+                {
+                    producto = producto.Where(data => data.IdUsuario == usuario.Uid && data.Activo == true && data.IdCategoria.ToString().Contains(categoria.ToString())).ToList();
+                }
+            return producto;
+        }
+
+        [HttpGet]
+        [Route("ProductosPendientes")]
+        public async Task<ActionResult<IEnumerable<Producto>>> GetProductosPendientes([FromQuery] int pagina, [FromQuery] int cantidad, [FromQuery] int categoria, [FromHeader] String Authorization)
+        {
+            string idToken = Authorization.Remove(0, 7);
+            usuario = await autenticar.obtener_usuario(idToken);
+
+            List<Producto> producto = new List<Producto>();
+
+            if (pagina != 0 && cantidad != 0)
             {
-                return BadRequest();
+                producto = await _context.Producto.Where(c => c.Activo == false).Skip((pagina - 1) * cantidad).Take(cantidad).ToListAsync();
+            }
+            else
+            {
+                producto = await _context.Producto.Where(c => c.Activo == false).ToListAsync();
             }
 
-            producto.ImagenUrl = imagenes(producto, 1);
-            _context.Entry(producto).State = EntityState.Modified;
+            if (categoria != 0)
+            {
+                producto = producto.Where(data => data.Activo == false && data.IdCategoria.ToString().Contains(categoria.ToString())).ToList();
+            }
+            return producto;
+        }
 
+        [HttpPost]
+        [Route("ProcesarProducto")]
+        public async Task<ActionResult<Producto>> PostProcesarProducto(int id, string estado)
+        {
+            var producto = new Producto();
+            var productoModificar = new Producto();
+            var productoEliminar = new Producto();
+            int prodModificar = 0, prodEliminar = 0;
+            string tipo = "";
+
+            producto = await _context.Producto.Where(c => c.Activo == true && c.Id == id).FirstOrDefaultAsync();
+            tipo = producto.SolicitudProductoIdProductoNavigation.First().Tipo;
+            if ((bool)producto.Activo == false && producto.SolicitudProductoIdProductoModificarNavigation.First() == null && tipo == "Nuevo" && estado == "Aprobado")
+            {
+                producto.Activo = true;
+                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
+                producto.SolicitudProductoIdProductoNavigation.First().Comentario = "Se agrego el producto " + id +" correctamente";
+                _context.Entry(producto).State = EntityState.Modified;
+            }
+            else if (tipo == "Modificar" && estado == "Aprobado")
+            {
+                prodModificar = (int)producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar;
+                productoModificar = await _context.Producto.Where(c => c.Activo == true && c.Id == prodModificar).FirstOrDefaultAsync();
+
+                productoModificar.IdCategoria = producto.IdCategoria;
+                productoModificar.ImagenUrl = producto.ImagenUrl;
+                productoModificar.Nombre = producto.Nombre;
+                productoModificar.Precio = producto.Precio;
+                _context.Entry(productoModificar).State = EntityState.Modified;
+                imagenes(producto, 2);
+                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
+                producto.SolicitudProductoIdProductoNavigation.First().IdProducto = null;
+                producto.SolicitudProductoIdProductoNavigation.First().Comentario = "Se modificó el producto " + productoModificar.Id + " correctamente";
+                _context.Producto.Remove(producto);
+            }
+            else if (tipo == "Eliminar" && estado == "Aprobado")
+            {
+                //cuando soliciten eliminacion debe de mostrarse el producto en el dashboard
+                prodEliminar = (int)producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar;
+                productoEliminar = await _context.Producto.Where(c => c.Activo == true && c.Id == prodEliminar).FirstOrDefaultAsync();
+                imagenes(producto, 2);
+                imagenes(productoEliminar, 2);
+                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
+                producto.SolicitudProductoIdProductoNavigation.First().IdProducto = null;
+                producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar = null;
+                producto.SolicitudProductoIdProductoNavigation.First().Comentario = "Se eliminó el producto " + productoEliminar.Id + " correctamente";
+                _context.Producto.Remove(producto);
+                _context.Producto.Remove(productoEliminar);
+            }
+            else if (estado == "Denegado")
+            {
+                if (tipo == "Eliminar")
+                {
+                    producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar = null;
+                }
+                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
+                producto.SolicitudProductoIdProductoNavigation.First().IdProducto = null;
+                imagenes(producto, 2);
+                _context.Producto.Remove(producto);
+            }
             try
             {
                 await _context.SaveChangesAsync();
@@ -101,32 +184,16 @@ namespace APISalesSystem.Controllers
             return NoContent();
         }
 
-        // POST: api/Productos
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Producto>> PostProducto(Producto producto)
+        // GET: api/Productos/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Producto>> GetProducto(int id)
         {
-            producto.ImagenUrl = imagenes(producto, 0);
-            _context.Producto.Add(producto);
-            await _context.SaveChangesAsync();
+            var producto = await _context.Producto.Where(c => c.IdUsuario == usuario.Uid && c.Activo == true && c.Id == id).FirstOrDefaultAsync();
 
-            return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
-        }
-
-        // DELETE: api/Productos/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Producto>> DeleteProducto(int id)
-        {
-            var producto = await _context.Producto.FindAsync(id);
             if (producto == null)
             {
                 return NotFound();
             }
-
-            imagenes(producto, 2);
-            _context.Producto.Remove(producto);
-            await _context.SaveChangesAsync();
 
             return producto;
         }
@@ -170,6 +237,23 @@ namespace APISalesSystem.Controllers
             }
 
             return "";
+        }
+        // DELETE: api/Categorias/5
+        [HttpPost]
+        public async Task<ActionResult<Producto>> DeleteProducto(int id)
+        { 
+
+            var producto = await _context.Producto.FindAsync(id);
+
+            if (producto == null)
+            {
+                return NotFound();
+            }
+
+            _context.Producto.Remove(producto);
+            await _context.SaveChangesAsync();
+
+            return producto;
         }
     }
 }

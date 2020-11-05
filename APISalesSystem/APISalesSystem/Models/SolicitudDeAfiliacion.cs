@@ -13,6 +13,7 @@ namespace APISalesSystem
         public string ReciboTelefonoUrl { get; set; }
         public string PagareUrl { get; set; }
         public string Estado { get; set; }
-        public string id_Usuario { get; set; }
+        public string IdUsuario { get; set; }
+        public string Comentario { get; set; }
     }
 }

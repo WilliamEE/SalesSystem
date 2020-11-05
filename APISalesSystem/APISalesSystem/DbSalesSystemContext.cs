@@ -16,19 +16,16 @@ namespace APISalesSystem
         }
 
         public virtual DbSet<Categoria> Categoria { get; set; }
-        public virtual DbSet<PerfilDeUsuario> PerfilDeUsuario { get; set; }
         public virtual DbSet<Producto> Producto { get; set; }
-        public virtual DbSet<Rol> Rol { get; set; }
         public virtual DbSet<SolicitudDeAfiliacion> SolicitudDeAfiliacion { get; set; }
-        public virtual DbSet<Usuario> Usuario { get; set; }
+        public virtual DbSet<SolicitudProducto> SolicitudProducto { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                //optionsBuilder.UseSqlServer("Data Source=desktop-dicqel7\\dsi215;Initial Catalog=DbSalesSystem;User ID=sales;Password=1234");
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-C2NASPK;Initial Catalog=DbSalesSystem;User ID=sales;Password=1234");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Data Source=Localhost\\dsi215;Initial Catalog=DbSalesSystem;Integrated Security=true");
             }
         }
 
@@ -53,44 +50,20 @@ namespace APISalesSystem
                     .HasConstraintName("FK_categoria_categoria");
             });
 
-            modelBuilder.Entity<PerfilDeUsuario>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("perfilDeUsuario");
-
-                entity.Property(e => e.FotoDePerfil)
-                    .HasColumnName("fotoDePerfil")
-                    .HasMaxLength(400)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedOnAdd();
-
-                entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
-
-                entity.Property(e => e.Nombre)
-                    .HasColumnName("nombre")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.IdUsuarioNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.IdUsuario)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_perfilDeUsuario_usuario");
-            });
-
             modelBuilder.Entity<Producto>(entity =>
             {
                 entity.ToTable("producto");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Activo).HasColumnName("activo");
+
                 entity.Property(e => e.IdCategoria).HasColumnName("id_categoria");
 
-                entity.Property(e => e.IdPerfil).HasColumnName("id_perfil");
+                entity.Property(e => e.IdUsuario)
+                    .HasColumnName("id_usuario")
+                    .HasMaxLength(400)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ImagenUrl)
                     .HasColumnName("imagenUrl")
@@ -109,25 +82,17 @@ namespace APISalesSystem
                 entity.HasOne(d => d.IdCategoriaNavigation)
                     .WithMany(p => p.Producto)
                     .HasForeignKey(d => d.IdCategoria)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_producto_categoria");
-            });
-
-            modelBuilder.Entity<Rol>(entity =>
-            {
-                entity.ToTable("rol");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Nombre)
-                    .HasColumnName("nombre")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<SolicitudDeAfiliacion>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Comentario)
+                    .HasColumnName("comentario")
+                    .HasMaxLength(400)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Estado)
                     .HasColumnName("estado")
@@ -137,6 +102,11 @@ namespace APISalesSystem
                 entity.Property(e => e.Fecha)
                     .HasColumnName("fecha")
                     .HasColumnType("date");
+
+                entity.Property(e => e.IdUsuario)
+                    .HasColumnName("id_Usuario")
+                    .HasMaxLength(400)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.PagareUrl)
                     .HasColumnName("pagareUrl")
@@ -161,35 +131,40 @@ namespace APISalesSystem
                     .HasColumnName("referenciaBancariaUrl")
                     .HasMaxLength(400)
                     .IsUnicode(false);
-
-                entity.Property(e => e.id_Usuario)
-                    .HasMaxLength(400)
-                    .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Usuario>(entity =>
+            modelBuilder.Entity<SolicitudProducto>(entity =>
             {
-                entity.ToTable("usuario");
-
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Contraseña)
-                    .HasColumnName("contraseña")
-                    .HasMaxLength(100)
+                entity.Property(e => e.Estado)
+                    .HasColumnName("estado")
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Correo)
-                    .HasColumnName("correo")
-                    .HasMaxLength(100)
+                entity.Property(e => e.IdProducto).HasColumnName("id_producto");
+
+                entity.Property(e => e.IdProductoModificar).HasColumnName("id_producto_modificar");
+
+                entity.Property(e => e.Tipo)
+                    .HasColumnName("tipo")
+                    .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IdRol).HasColumnName("id_rol");
+                entity.Property(e => e.Comentario)
+                   .HasColumnName("comentario")
+                   .HasMaxLength(100)
+                   .IsUnicode(false);
 
-                entity.HasOne(d => d.IdRolNavigation)
-                    .WithMany(p => p.Usuario)
-                    .HasForeignKey(d => d.IdRol)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_usuario_rol");
+                entity.HasOne(d => d.IdProductoNavigation)
+                    .WithMany(p => p.SolicitudProductoIdProductoNavigation)
+                    .HasForeignKey(d => d.IdProducto)
+                    .HasConstraintName("FK_SolicitudProducto_Producto");
+
+                entity.HasOne(d => d.IdProductoModificarNavigation)
+                    .WithMany(p => p.SolicitudProductoIdProductoModificarNavigation)
+                    .HasForeignKey(d => d.IdProductoModificar)
+                    .HasConstraintName("FK_SolicitudProducto_ProductoMod");
             });
 
             OnModelCreatingPartial(modelBuilder);

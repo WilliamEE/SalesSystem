@@ -21,6 +21,12 @@ namespace APISalesSystem.Controllers
         }
 
         // GET: api/Categorias
+        /// <summary>
+        /// Obtiene todas las categorias
+        /// </summary>
+        /// <param name="pagina">Número de páginas que se desean obtener</param>
+        /// <param name="cantidad">Cantidad de elementos por página</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria([FromQuery] int pagina, [FromQuery] int cantidad)
         {
