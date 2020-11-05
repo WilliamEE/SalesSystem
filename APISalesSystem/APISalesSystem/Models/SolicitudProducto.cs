@@ -12,7 +12,6 @@ namespace APISalesSystem
         public string Estado { get; set; }
         public string Comentario { get; set; }
 
-        public virtual Producto IdProductoModificarNavigation { get; set; }
         public virtual Producto IdProductoNavigation { get; set; }
     }
 }

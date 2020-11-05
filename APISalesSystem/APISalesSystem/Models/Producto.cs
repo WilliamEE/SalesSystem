@@ -7,8 +7,7 @@ namespace APISalesSystem
     {
         public Producto()
         {
-            SolicitudProductoIdProductoModificarNavigation = new HashSet<SolicitudProducto>();
-            SolicitudProductoIdProductoNavigation = new HashSet<SolicitudProducto>();
+            SolicitudProducto = new HashSet<SolicitudProducto>();
         }
 
         public int Id { get; set; }
@@ -20,7 +19,6 @@ namespace APISalesSystem
         public bool? Activo { get; set; }
 
         public virtual Categoria IdCategoriaNavigation { get; set; }
-        public virtual ICollection<SolicitudProducto> SolicitudProductoIdProductoModificarNavigation { get; set; }
-        public virtual ICollection<SolicitudProducto> SolicitudProductoIdProductoNavigation { get; set; }
+        public virtual ICollection<SolicitudProducto> SolicitudProducto { get; set; }
     }
 }

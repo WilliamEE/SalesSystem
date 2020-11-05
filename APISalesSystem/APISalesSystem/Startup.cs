@@ -91,6 +91,7 @@ namespace APISalesSystem
                 app.UseDeveloperExceptionPage();
             }
 
+
             app.UseStaticFiles();
 
             app.UseCors("AllowWebApp");

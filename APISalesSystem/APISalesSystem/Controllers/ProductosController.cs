@@ -22,6 +22,7 @@ namespace APISalesSystem.Controllers
     {
         UsuarioFirebaseDecodificado autenticar = new UsuarioFirebaseDecodificado();
         UsuarioFirebase usuario = new UsuarioFirebase();
+        int id_cambio;
         private readonly DbSalesSystemContext _context;
 
         public ProductosController(DbSalesSystemContext context)
@@ -35,7 +36,6 @@ namespace APISalesSystem.Controllers
         {
             string idToken = Authorization.Remove(0, 7);
             usuario = await autenticar.obtener_usuario(idToken);
-
             List<Producto> producto = new List<Producto>();
             //if (usuario.admin)
             //{
@@ -106,27 +106,39 @@ namespace APISalesSystem.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult<Producto>> PostProducto(Producto producto)
+        {
+            _context.Producto.Add(producto);
+            imagenes(producto, 0);
+            await _context.SaveChangesAsync();
+            
+            return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
+        }
+
+        [HttpPost]
         [Route("ProcesarProducto")]
         public async Task<ActionResult<Producto>> PostProcesarProducto(int id, string estado)
         {
             var producto = new Producto();
             var productoModificar = new Producto();
             var productoEliminar = new Producto();
-            int prodModificar = 0, prodEliminar = 0;
+            var solicitud = new SolicitudProducto();
+            int prodModificar = 0, prodEliminar = 0 ;
             string tipo = "";
 
-            producto = await _context.Producto.Where(c => c.Activo == true && c.Id == id).FirstOrDefaultAsync();
-            tipo = producto.SolicitudProductoIdProductoNavigation.First().Tipo;
-            if ((bool)producto.Activo == false && producto.SolicitudProductoIdProductoModificarNavigation.First() == null && tipo == "Nuevo" && estado == "Aprobado")
+            //tipo = producto.SolicitudProductoIdProductoNavigation.First().Tipo;
+            solicitud = await actualizarSolicitud(id, estado);
+            tipo = solicitud.Tipo;
+            
+            producto = await _context.Producto.Where(c => c.Activo == false && c.Id == id).FirstOrDefaultAsync();
+            if ((bool)producto.Activo == false && tipo == "Agregar" && estado == "Aprobado")
             {
                 producto.Activo = true;
-                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
-                producto.SolicitudProductoIdProductoNavigation.First().Comentario = "Se agrego el producto " + id +" correctamente";
                 _context.Entry(producto).State = EntityState.Modified;
             }
             else if (tipo == "Modificar" && estado == "Aprobado")
             {
-                prodModificar = (int)producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar;
+                prodModificar = (int)solicitud.IdProductoModificar;
                 productoModificar = await _context.Producto.Where(c => c.Activo == true && c.Id == prodModificar).FirstOrDefaultAsync();
 
                 productoModificar.IdCategoria = producto.IdCategoria;
@@ -135,33 +147,20 @@ namespace APISalesSystem.Controllers
                 productoModificar.Precio = producto.Precio;
                 _context.Entry(productoModificar).State = EntityState.Modified;
                 imagenes(producto, 2);
-                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
-                producto.SolicitudProductoIdProductoNavigation.First().IdProducto = null;
-                producto.SolicitudProductoIdProductoNavigation.First().Comentario = "Se modificó el producto " + productoModificar.Id + " correctamente";
                 _context.Producto.Remove(producto);
             }
             else if (tipo == "Eliminar" && estado == "Aprobado")
             {
                 //cuando soliciten eliminacion debe de mostrarse el producto en el dashboard
-                prodEliminar = (int)producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar;
+                prodEliminar = id_cambio;
                 productoEliminar = await _context.Producto.Where(c => c.Activo == true && c.Id == prodEliminar).FirstOrDefaultAsync();
                 imagenes(producto, 2);
                 imagenes(productoEliminar, 2);
-                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
-                producto.SolicitudProductoIdProductoNavigation.First().IdProducto = null;
-                producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar = null;
-                producto.SolicitudProductoIdProductoNavigation.First().Comentario = "Se eliminó el producto " + productoEliminar.Id + " correctamente";
                 _context.Producto.Remove(producto);
                 _context.Producto.Remove(productoEliminar);
             }
             else if (estado == "Denegado")
             {
-                if (tipo == "Eliminar")
-                {
-                    producto.SolicitudProductoIdProductoModificarNavigation.First().IdProductoModificar = null;
-                }
-                producto.SolicitudProductoIdProductoNavigation.First().Estado = estado;
-                producto.SolicitudProductoIdProductoNavigation.First().IdProducto = null;
                 imagenes(producto, 2);
                 _context.Producto.Remove(producto);
             }
@@ -238,22 +237,50 @@ namespace APISalesSystem.Controllers
 
             return "";
         }
-        // DELETE: api/Categorias/5
-        [HttpPost]
-        public async Task<ActionResult<Producto>> DeleteProducto(int id)
-        { 
 
-            var producto = await _context.Producto.FindAsync(id);
+        public async Task<SolicitudProducto> actualizarSolicitud(int id, string estado) 
+        {
+            
+            var solicitud = await _context.SolicitudProducto.Where(c => c.IdProducto == id).FirstAsync();
+            id_cambio = (int)solicitud.IdProductoModificar;
+            string tipo = solicitud.Tipo;
 
-            if (producto == null)
+            solicitud.Estado = estado;
+
+            _context.Entry(solicitud).State = EntityState.Modified;
+
+            if (estado == "Aprobado" && tipo == "Agregar")
             {
-                return NotFound();
+                solicitud.Comentario = "Se agregó el producto " + id + " correctamente";
+            }
+            else if (estado == "Aprobado" && tipo == "Modificar")
+            {
+                solicitud.IdProducto = null;
+                solicitud.Comentario = "Se modificó el producto " + id_cambio + " correctamente";
+            }
+            else if (estado == "Aprobado" && tipo == "Eliminar")
+            {
+                solicitud.IdProducto = null;
+                solicitud.IdProductoModificar = 0;
+                solicitud.Comentario = "Se elimino el producto " + id_cambio + " correctamente";
+            }
+            else if (estado == "Denegado")
+            {
+                solicitud.IdProducto = null;
+                solicitud.IdProductoModificar = 0;
+                if (tipo == "Agregar") { solicitud.Comentario = "Se denegó la acción sobre el producto " + id; }
+                if (tipo == "Modificar" || tipo == "Eliminar") { solicitud.Comentario = "Se denegó la acción sobre el producto " + id_cambio; }
             }
 
-            _context.Producto.Remove(producto);
-            await _context.SaveChangesAsync();
-
-            return producto;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return solicitud;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return solicitud;
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace APISalesSystem
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=Localhost\\dsi215;Initial Catalog=DbSalesSystem;Integrated Security=true");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-DICQEL7\\dsi215;Initial Catalog=DbSalesSystem; Integrated Security=true");
             }
         }
 
@@ -137,6 +137,11 @@ namespace APISalesSystem
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Comentario)
+                    .HasColumnName("comentario")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Estado)
                     .HasColumnName("estado")
                     .HasMaxLength(20)
@@ -151,20 +156,10 @@ namespace APISalesSystem
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Comentario)
-                   .HasColumnName("comentario")
-                   .HasMaxLength(100)
-                   .IsUnicode(false);
-
                 entity.HasOne(d => d.IdProductoNavigation)
-                    .WithMany(p => p.SolicitudProductoIdProductoNavigation)
+                    .WithMany(p => p.SolicitudProducto)
                     .HasForeignKey(d => d.IdProducto)
                     .HasConstraintName("FK_SolicitudProducto_Producto");
-
-                entity.HasOne(d => d.IdProductoModificarNavigation)
-                    .WithMany(p => p.SolicitudProductoIdProductoModificarNavigation)
-                    .HasForeignKey(d => d.IdProductoModificar)
-                    .HasConstraintName("FK_SolicitudProducto_ProductoMod");
             });
 
             OnModelCreatingPartial(modelBuilder);
