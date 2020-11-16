@@ -6,11 +6,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using APISalesSystem;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace APISalesSystem.Controllers
 {
+    [EnableCors("AllowWebApp")]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriasController : ControllerBase
     {
         private readonly DbSalesSystemContext _context;

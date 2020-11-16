@@ -46,11 +46,10 @@ namespace APISalesSystem
 
             services.AddDbContext<DbSalesSystemContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
-            services.AddControllers();
             services.AddCors(options => options.AddPolicy("AllowWebApp",
-                builder => builder.AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod()
+                builder => builder.WithOrigins("*")
+                .WithHeaders("*")
+                .WithMethods("*")
                 ));
 
             
@@ -86,19 +85,19 @@ namespace APISalesSystem
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
+            //if (env.IsDevelopment())
+            //{
                 app.UseDeveloperExceptionPage();
-            }
+            //}
 
 
             app.UseStaticFiles();
 
-            app.UseCors("AllowWebApp");
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("AllowWebApp");
 
             app.UseAuthentication();
 

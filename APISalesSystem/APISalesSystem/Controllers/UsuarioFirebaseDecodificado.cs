@@ -12,6 +12,12 @@ namespace APISalesSystem.Controllers
         {
             UsuarioFirebase usuario = new UsuarioFirebase();
             FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
+            //Sirve para poner claims a un token
+            //var prueba = new Dictionary<string, object>()
+            //{
+            //{ "admin", true },
+            //};
+            //await FirebaseAuth.DefaultInstance.SetCustomUserClaimsAsync(decodedToken.Uid, prueba);
             usuario.Uid = decodedToken.Uid;
             var claims = decodedToken.Claims;
             object isAdmin, isSeller;

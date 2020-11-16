@@ -331,3 +331,7 @@ C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Debug\netcoreapp3.1\APISalesSystem.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\obj\Debug\netcoreapp3.1\APISalesSystem.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Debug\netcoreapp3.1\Config\firebase-dsi215.json
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\willi\OneDrive\Escritorio\SalesSystem\APISalesSystem\APISalesSystem\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
