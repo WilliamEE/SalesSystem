@@ -105,7 +105,7 @@ namespace APISalesSystem
 
             app.UseStaticFiles();
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
