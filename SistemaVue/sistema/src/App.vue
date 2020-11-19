@@ -151,7 +151,17 @@
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>
-                  Consultas
+                  Solicitudes
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile :to="{ name: 'solicitudes'}">
+              <v-list-tile-action>
+                <v-icon>table_chart</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  Solicitud de afiliación
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -161,17 +171,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  Consultas compras
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile :to="{ name: ''}">
-              <v-list-tile-action>
-                <v-icon>table_chart</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  Consultas ventas
+                 Solicitudes de productos
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>

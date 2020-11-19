@@ -10,6 +10,7 @@ import Proveedor from './components/Proveedor.vue'
 import Login from './components/Login.vue'
 import Ingreso from './components/Ingreso.vue'
 import Venta from './components/Venta.vue'
+import Solicitudes from './components/SolicitudAfiliacion'
 import store from './store'
 
 Vue.use(Router)
@@ -32,6 +33,15 @@ var router = new Router({
       path: '/categorias',
       name: 'categorias',
       component: Categoria,
+      meta :{
+        administrador :true,
+        almacenero: true
+      }
+    },
+    {
+      path: '/solicitudes',
+      name: 'solicitudes',
+      component: Solicitudes,
       meta :{
         administrador :true,
         almacenero: true
@@ -105,7 +115,7 @@ var router = new Router({
       meta : {
         libre: true
       }
-    }
+    },
   ]
 })
 
