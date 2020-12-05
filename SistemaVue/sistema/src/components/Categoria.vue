@@ -42,6 +42,39 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
+
+                    <v-dialog v-model="deleteModal" max-width="500px">
+                        <v-card>
+                            <v-card-title>
+                            <span class="headline">Eliminar categoría</span>
+                            </v-card-title>
+                
+                            <v-card-text>
+                            <v-container grid-list-md>
+                                <v-layout wrap>
+                                <v-flex xs12 sm12 md12>
+                                    <!-- <v-text-field v-model="nombre" label="Nombre"></v-text-field> -->
+                                    <p>¿Desea continuar eliminando el registro {{ nombre }}?</p>
+                                </v-flex>
+                                <!-- <v-flex xs12 sm12 md12>
+                                    <v-text-field v-model="id_padre" label="Padre"></v-text-field>
+                                </v-flex> -->
+                                <!-- <v-flex xs12 sm12 md12 v-show="valida">
+                                    <div class="red--text" v-for="v in validaMensaje" :key="v" v-text="v">
+                                    </div>
+                                </v-flex> -->
+                                </v-layout>
+                            </v-container>
+                            </v-card-text>
+                
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" flat @click.native="close">Cancelar</v-btn>
+                                <v-btn color="red lighten-1" flat @click.native="eliminar">Eliminar</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+
                     <v-dialog v-model="adModal" max-width="290">
                         <v-card>
                             <v-card-title class="headline" v-if="adAccion==1">¿Activar Item?</v-card-title>
@@ -75,6 +108,8 @@
                 class="elevation-1"
             >
                 <template slot="items" slot-scope="props">
+                    
+                    <td>{{ props.item.nombre }}</td>
                     <td class="justify-center layout px-0">
                         <v-icon
                         small
@@ -83,33 +118,38 @@
                         >
                         edit
                         </v-icon>
-                        <template v-if="props.item.condicion">
+                        <v-icon
+                        small
+                        class="mr-2"
+                        @click="deleteItem(props.item)"
+                        >
+                        delete
+                        </v-icon>
+                        <!-- <template v-if="props.item.condicion">
                             <v-icon
                             small
                             @click="activarDesactivarMostrar(2,props.item)"
                             >
                             block
                             </v-icon>
-                        </template>
-                        <template v-else>
+                        </template> -->
+                        <!-- <template v-else>
                             <v-icon
                             small
                             @click="activarDesactivarMostrar(1,props.item)"
                             >
                             check
                             </v-icon>
-                        </template>
+                        </template> -->
                     </td>
-                    <td>{{ props.item.nombre }}</td>
-                    <td>{{ props.item.descripcion }}</td>
-                    <td>
+                    <!-- <td>
                         <div v-if="props.item.condicion">
                             <span class="blue--text">Activo</span>
                         </div>
                         <div v-else>
                             <span class="red--text">Inactivo</span>
                         </div>
-                    </td>
+                    </td> -->
                 </template>
                 <template slot="no-data">
                 <v-btn color="primary" @click="listar">Resetear</v-btn>
@@ -126,8 +166,8 @@
                 categorias:[],                
                 dialog: false,
                 headers: [
-                    { text: 'Opciones', value: 'opciones', sortable: false },
                     { text: 'Nombre', value: 'nombre' },
+                    { text: 'Opciones', value: 'opciones', sortable: false },
                     // { text: 'Descripción', value: 'descripcion', sortable: false  },
                     // { text: 'Estado', value: 'condicion', sortable: false  }                
                 ],
@@ -139,6 +179,7 @@
                 valida: 0,
                 validaMensaje:[],
                 adModal: 0,
+                deleteModal: 0,
                 adAccion: 0,
                 adNombre: '',
                 adId: ''             
@@ -173,20 +214,44 @@
                 });
             },
             editItem (item) {
-                this.id=item.idcategoria;
+                this.id=item.id;
                 this.nombre=item.nombre;
                 this.id_padre=item.id_padre;
                 this.editedIndex=1;
                 this.dialog = true
             },
-
             deleteItem (item) {
-                const index = this.desserts.indexOf(item)
-                confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+                this.id=item.id;
+                this.nombre=item.nombre;
+                this.id_padre=item.id_padre;
+                this.editedIndex=1;
+                this.deleteModal = true
+            },
+
+            eliminar () {
+                //const index = this.desserts.indexOf(item)
+                //this.id=item.id;
+                // var r = confirm('Are you sure you want to delete this item?') //&& this.desserts.splice(index, 1)
+                // if (r == true)
+                // {
+                    let header={"Authorization" : "Bearer " + this.$store.state.token};
+                    let configuracion= {headers : header};
+                    let me=this;
+                    console.log('prueba')
+                    axios.delete('api/Categorias/' + me.id,
+                    configuracion).then(function(response){
+                        me.close();
+                        me.listar();
+                        me.limpiar();                        
+                    }).catch(function(error){
+                        console.log(error);
+                    });
+                //}
             },
 
             close () {
                 this.dialog = false;
+                this.deleteModal = false;
                 this.limpiar();
             },
             limpiar(){
@@ -204,9 +269,11 @@
                     //Código para editar
                     //Código para guardar
                     let me=this;
-                    axios.put('api/categorias',{
+                    console.log('prueba')
+                    axios.put('api/Categorias/' + me.id,{
                         'id':me.id,
-                        'nombre': me.nombre
+                        'nombre': me.nombre,
+                        'id_padre': me.id_padre
                     },configuracion).then(function(response){
                         me.close();
                         me.listar();
