@@ -53,9 +53,7 @@ namespace APISalesSystem
 
             modelBuilder.Entity<Deseo>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ProductoId).HasColumnName("producto_id");
 
@@ -68,7 +66,7 @@ namespace APISalesSystem
                     .WithMany(p => p.Deseo)
                     .HasForeignKey(d => d.ProductoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Deseo__producto___36B12243");
+                    .HasConstraintName("FK__Deseo__producto___4F7CD00D");
             });
 
             modelBuilder.Entity<Producto>(entity =>
