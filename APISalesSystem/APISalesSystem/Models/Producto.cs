@@ -7,6 +7,7 @@ namespace APISalesSystem
     {
         public Producto()
         {
+            Deseo = new HashSet<Deseo>();
             SolicitudProducto = new HashSet<SolicitudProducto>();
         }
 
@@ -19,6 +20,7 @@ namespace APISalesSystem
         public bool? Activo { get; set; }
 
         public virtual Categoria IdCategoriaNavigation { get; set; }
+        public virtual ICollection<Deseo> Deseo { get; set; }
         public virtual ICollection<SolicitudProducto> SolicitudProducto { get; set; }
     }
 }
