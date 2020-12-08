@@ -20,4 +20,4 @@ namespace APISalesSystem
         public virtual ICollection<LineaDeOrden> LineaDeOrden { get; set; }
     }
 }
-}
+

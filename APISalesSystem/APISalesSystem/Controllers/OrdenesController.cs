@@ -26,7 +26,11 @@ namespace APISalesSystem.Controllers
         public async Task<ActionResult<Orden>> PostOrden(Orden orden, [FromHeader] string authorization) {
             string idToken = authorization.Remove(0, 7);
             usuario = await autenticar.obtener_usuario(idToken);
-            
+            orden.UsuarioId = usuario.Uid;
+            orden.Estado = "Pendiente";
+            orden.Fecha = DateTime.Now.ToString();
+            _context.Orden.Add(orden);
+            await _context.SaveChangesAsync();
             return CreatedAtAction("GetOrden", new { id = orden.Id }, orden);
         }
 
