@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Carlos\\dev\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj": {}
+    "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Carlos\\dev\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj": {
+    "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Carlos\\dev\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
+        "projectUniqueName": "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
         "projectName": "APISalesSystem",
-        "projectPath": "C:\\Users\\Carlos\\dev\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
-        "packagesPath": "C:\\Users\\Carlos\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Carlos\\dev\\SalesSystem\\APISalesSystem\\APISalesSystem\\obj\\",
+        "projectPath": "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\APISalesSystem.csproj",
+        "packagesPath": "C:\\Users\\willi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\willi\\OneDrive\\Escritorio\\SalesSystem\\APISalesSystem\\APISalesSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Carlos\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\willi\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
