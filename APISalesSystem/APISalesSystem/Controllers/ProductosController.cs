@@ -214,7 +214,7 @@ namespace APISalesSystem.Controllers
                 {
                     //Es importante contar cuantos caracteres tiene antes de la ultima pleca en la ruta almacenada en base de datos
                     ruta_imagen_eliminar = ruta_imagen_eliminar.Remove(0, 38);
-                    System.IO.File.Delete(filtePath + "\\" + ruta_imagen_eliminar);
+                    System.IO.File.Delete(Path.Join(filtePath, ruta_imagen_eliminar));
                 }
                 _context.Entry(imagen_cambiar).State = EntityState.Detached;
             }
@@ -223,7 +223,7 @@ namespace APISalesSystem.Controllers
                 //Agregando imagen a carpeta
                 //string nombreImagen = producto.Nombre.Replace(" ", "");
                 Guid nombreImagen = Guid.NewGuid();
-                string rutaImagen = filtePath + "\\" + nombreImagen + ".png";
+                string rutaImagen = Path.Join(filtePath, nombreImagen + ".png");
                 string imagenBase = producto.ImagenUrl;
                 if (imagenBase != "" && imagenBase != null)
                 {

@@ -16,6 +16,7 @@ namespace APISalesSystem
         }
 
         public virtual DbSet<Categoria> Categoria { get; set; }
+        public virtual DbSet<Deseo> Deseo { get; set; }
         public virtual DbSet<Producto> Producto { get; set; }
         public virtual DbSet<SolicitudDeAfiliacion> SolicitudDeAfiliacion { get; set; }
         public virtual DbSet<SolicitudProducto> SolicitudProducto { get; set; }
@@ -25,7 +26,7 @@ namespace APISalesSystem
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-DICQEL7\\dsi215;Initial Catalog=DbSalesSystem; Integrated Security=true");
+                optionsBuilder.UseSqlServer("Server=104.131.10.108;Database=DbSalesSystem;User ID=SA;Password=D1s3n0d3S1st3m@s;");
             }
         }
 
@@ -48,6 +49,24 @@ namespace APISalesSystem
                     .WithMany(p => p.InverseIdPadreNavigation)
                     .HasForeignKey(d => d.IdPadre)
                     .HasConstraintName("FK_categoria_categoria");
+            });
+
+            modelBuilder.Entity<Deseo>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ProductoId).HasColumnName("producto_id");
+
+                entity.Property(e => e.UsuarioId)
+                    .HasColumnName("usuario_id")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Producto)
+                    .WithMany(p => p.Deseo)
+                    .HasForeignKey(d => d.ProductoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Deseo__producto___4F7CD00D");
             });
 
             modelBuilder.Entity<Producto>(entity =>

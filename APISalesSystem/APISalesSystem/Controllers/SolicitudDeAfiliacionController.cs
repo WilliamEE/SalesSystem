@@ -57,22 +57,6 @@ namespace APISalesSystem.Controllers
             }
             return solicitud;
         }
-        //// GET: api/SolicitudDeAfiliacion/5
-        //[HttpGet("porId")]
-        //public async Task<ActionResult<SolicitudDeAfiliacion>> GetSolicitudDeAfiliacionId([FromQuery] string token, [FromHeader] string Authorization)
-        //{
-        //    string idToken = Authorization.Remove(0, 7);
-        //    usuario = await autenticar.obtener_usuario(idToken);
-
-        //    //var solicitudDeAfiliacion = await _context.SolicitudDeAfiliacion.FindAsync(id);
-        //    var solicitudDeAfiliacion = await _context.SolicitudDeAfiliacion.Where(c => c.IdUsuario == usuario.Uid).OrderByDescending(c => c.Id).FirstOrDefaultAsync();
-        //    if (solicitudDeAfiliacion == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return solicitudDeAfiliacion;
-        //}
 
         [HttpGet("{id}")]
         [Authorize]
@@ -193,7 +177,7 @@ namespace APISalesSystem.Controllers
                     {
                         //Es importante contar cuantos caracteres tiene antes de la ultima pleca en la ruta almacenada en base de datos
                         ruta_seleccionada = ruta_seleccionada.Remove(0, 38);
-                        System.IO.File.Delete(filtePath + "\\" + ruta_seleccionada);
+                        System.IO.File.Delete(Path.Join(filtePath, ruta_seleccionada));
                     }
                 }
 
@@ -209,7 +193,7 @@ namespace APISalesSystem.Controllers
                 {
                     //Agregando imagen a carpeta
                     Guid nombreImagen = Guid.NewGuid();
-                    string rutaImagen = filtePath + "\\" + nombreImagen + ".png";
+                    string rutaImagen = Path.Join(filtePath, nombreImagen + ".png");
                     string ruta_base = rutas[i];
                     if (ruta_base != "" && ruta_base != null)
                     {

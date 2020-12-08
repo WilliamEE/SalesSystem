@@ -80,10 +80,10 @@ namespace APISalesSystem
                         ValidateLifetime = true
                     };
                 });
-            string path = Path.GetFullPath(@"config");
+            string path = Path.GetFullPath(@"Config");
             FirebaseApp.Create(new AppOptions()
             {
-                Credential = GoogleCredential.FromFile(path + "\\firebase-dsi215.json"),
+                Credential = GoogleCredential.FromFile(Path.Join(path,"firebase-dsi215.json")),
             });
 
         }
