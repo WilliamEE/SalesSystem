@@ -17,6 +17,8 @@ namespace APISalesSystem
 
         public virtual DbSet<Categoria> Categoria { get; set; }
         public virtual DbSet<Deseo> Deseo { get; set; }
+        public virtual DbSet<LineaDeOrden> LineaDeOrden { get; set; }
+        public virtual DbSet<Orden> Orden { get; set; }
         public virtual DbSet<Producto> Producto { get; set; }
         public virtual DbSet<SolicitudDeAfiliacion> SolicitudDeAfiliacion { get; set; }
         public virtual DbSet<SolicitudProducto> SolicitudProducto { get; set; }
@@ -26,7 +28,7 @@ namespace APISalesSystem
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=104.131.10.108;Database=DbSalesSystem;User ID=SA;Password=D1s3n0d3S1st3m@s;");
+                optionsBuilder.UseSqlServer("Server=104.131.10.108;Database=DbSalesSystem;User ID=SA;Password=D1s3n0d3S1st3m@s");
             }
         }
 
@@ -67,6 +69,55 @@ namespace APISalesSystem
                     .HasForeignKey(d => d.ProductoId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Deseo__producto___4F7CD00D");
+            });
+
+            modelBuilder.Entity<LineaDeOrden>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+
+                entity.Property(e => e.OrdenId).HasColumnName("orden_id");
+
+                entity.Property(e => e.PrecioUnitario)
+                    .HasColumnName("precio_unitario")
+                    .HasColumnType("decimal(8, 2)");
+
+                entity.Property(e => e.ProductoId).HasColumnName("producto_id");
+
+                entity.HasOne(d => d.Orden)
+                    .WithMany(p => p.LineaDeOrden)
+                    .HasForeignKey(d => d.OrdenId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__LineaDeOr__orden__5441852A");
+
+                entity.HasOne(d => d.Producto)
+                    .WithMany(p => p.LineaDeOrden)
+                    .HasForeignKey(d => d.ProductoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__LineaDeOr__produ__5535A963");
+            });
+
+            modelBuilder.Entity<Orden>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Estado)
+                    .IsRequired()
+                    .HasColumnName("estado")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Fecha)
+                    .IsRequired()
+                    .HasColumnName("fecha")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.UsuarioId)
+                    .IsRequired()
+                    .HasColumnName("usuario_id")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Producto>(entity =>
