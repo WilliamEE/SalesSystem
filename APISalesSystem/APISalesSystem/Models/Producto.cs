@@ -9,6 +9,7 @@ namespace APISalesSystem
         {
             Deseo = new HashSet<Deseo>();
             SolicitudProducto = new HashSet<SolicitudProducto>();
+            LineaDeOrden = new HashSet<LineaDeOrden>();
         }
 
         public int Id { get; set; }
@@ -22,5 +23,6 @@ namespace APISalesSystem
         public virtual Categoria IdCategoriaNavigation { get; set; }
         public virtual ICollection<Deseo> Deseo { get; set; }
         public virtual ICollection<SolicitudProducto> SolicitudProducto { get; set; }
+        public virtual ICollection<LineaDeOrden> LineaDeOrden { get; set; }
     }
 }
