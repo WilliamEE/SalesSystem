@@ -21,7 +21,8 @@ const configOptions = {
 };
 firebase.initializeApp(configOptions);
 
-axios.defaults.baseURL='https://carlosmoran.me/'
+axios.defaults.baseURL='https://api.carlosmoran.me/'
+//axios.defaults.baseURL='https://localhost:44383/'
 new Vue({
   router,
   store,

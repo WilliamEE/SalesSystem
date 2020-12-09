@@ -37,7 +37,7 @@
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile :to="{ name: 'articulos'}">
+            <!-- <v-list-tile :to="{ name: 'articulos'}">
               <v-list-tile-action>
                 <v-icon>table_chart</v-icon>
               </v-list-tile-action>
@@ -46,11 +46,11 @@
                   Artículos
                 </v-list-tile-title>
               </v-list-tile-content>
-            </v-list-tile>
+            </v-list-tile> -->
 
           </v-list-group>
         </template>
-        <template v-if="esAdministrador || esAlmacenero">
+        <!-- <template v-if="esAdministrador || esAlmacenero">
           <v-list-group>
             <v-list-tile slot="activator">
               <v-list-tile-content>
@@ -81,8 +81,8 @@
             </v-list-tile>
 
           </v-list-group>
-        </template>
-        <template v-if="esAdministrador|| esVendedor">
+        </template> -->
+        <!-- <template v-if="esAdministrador|| esVendedor">
           <v-list-group>
             <v-list-tile slot="activator">
               <v-list-tile-content>
@@ -145,7 +145,7 @@
             </v-list-tile>
 
           </v-list-group>
-        </template>
+        </template> -->
         <template v-if="esAdministrador">
           <v-list-group>
             <v-list-tile slot="activator">

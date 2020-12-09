@@ -40,6 +40,21 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-dialog v-model="imgModal" >
+                        <v-card>
+                            <v-card-title class="headline">Imagen</v-card-title>
+                            <v-card-text>
+                                <img v-bind:src="referenciaBancariaUrl">
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="green darken-1" flat="flat" @click="activarDesactivarCerrar">
+                                    Cancelar
+                                </v-btn>
+                            </v-card-actions>
+
+                        </v-card>
+                    </v-dialog>
       </v-toolbar>
       <v-data-table
         :headers="headers"
@@ -77,13 +92,48 @@
           </td>
           <td>{{ props.item.idUsuario }}</td>
           <td>{{ props.item.fecha }}</td>
-          <td>{{ props.item.referenciaBancariaUrl }}</td>
-          <td>{{ props.item.reciboLuzUrl }}</td>
+          <!-- <td>{{ props.item.referenciaBancariaUrl }}</td> -->
+          <!-- <td><v-icon
+          width="200px"
+                @click="showImage(props.item)"
+                >
+                visibility
+          </v-icon></td> -->
+          <td><v-btn color="primary"  @click="showImage(props.item)">Ver imagen</v-btn></td>
+          <td><v-btn color="primary"  @click="showImage(props.item)">Ver imagen</v-btn></td>
+          <td><v-btn color="primary"  @click="showImage(props.item)">Ver imagen</v-btn></td>
+          <td><v-btn color="primary"  @click="showImage(props.item)">Ver imagen</v-btn></td>
+          <td><v-btn color="primary"  @click="showImage(props.item)">Ver imagen</v-btn></td>
+          <!-- <td><v-icon
+                width="200px"
+                @click="showImage(props.item)"
+                >
+                visibility
+          </v-icon></td>
+          <td><v-icon
+                width="200px"
+                @click="showImage(props.item)"
+                >
+                visibility
+          </v-icon></td>
+          <td><v-icon
+                width="200px"
+                @click="showImage(props.item)"
+                >
+                visibility
+          </v-icon></td>
+          <td><v-icon
+                width="200px"
+                @click="showImage(props.item)"
+                >
+                visibility
+          </v-icon></td>  -->
+          <!-- <td>{{ props.item.reciboLuzUrl }}</td>
           <td>{{ props.item.reciboAguaUrl }}</td>
           <td>{{ props.item.reciboTelefonoUrl }}</td>
-          <td>{{ props.item.pagareUrl }}</td>
+          <td>{{ props.item.pagareUrl }}</td> -->
           <td>{{ props.item.comentario }}</td>
-
+        
           <!-- <td>
                         <div v-if="props.item.condicion">
                             <span class="blue--text">Activo</span>
@@ -135,6 +185,7 @@
                 valida: 0,
                 validaMensaje:[],
                 adModal: 0,
+                imgModal: 0,
                 deleteModal: 0,
                 adAccion: 0,
                 adNombre: '',
@@ -189,6 +240,14 @@
                 this.editedIndex=1;
                 this.deleteModal = true
             },
+            showImage (item) {
+                // this.id=item.id;
+                // this.nombre=item.nombre;
+                // this.id_padre=item.id_padre;
+                // this.editedIndex=1;
+                this.referenciaBancariaUrl= axios.defaults.baseURL + item.referenciaBancariaUrl.substring(1),
+                this.imgModal = true
+            },
 
             eliminar () {
                 //const index = this.desserts.indexOf(item)
@@ -237,18 +296,20 @@
                     //Código para guardar
                     let me=this;
                     console.log('prueba')
-                    axios.put('api/SolicitudDeAfiliacion/' + me.id,{
-                        'id':me.id,
-                        'idUsuario' : me.idUsuario,
-                        'fecha': me.fecha,
-                        'referenciaBancariaUrl': me.referenciaBancariaUrl,
-                        'reciboLuzUrl': me.reciboLuzUrl,
-                        'reciboAguaUrl': me.reciboAguaUrl,
-                        'reciboTelefonoUrl' : me.reciboTelefonoUrl,
-                        'pagareUrl' : me.pagareUrl,
-                        'comentario': me.comentario,
-                        'estado' : "Aprobado"
-                    },configuracion).then(function(response){
+                    axios.post('api/SolicitudDeAfiliacion/GestionarSolicitud?id=' + me.id + '&estado=Aprobado',''
+                    // {
+                    //     'id':me.id,
+                    //     'idUsuario' : me.idUsuario,
+                    //     'fecha': me.fecha,
+                    //     'referenciaBancariaUrl': me.referenciaBancariaUrl,
+                    //     'reciboLuzUrl': me.reciboLuzUrl,
+                    //     'reciboAguaUrl': me.reciboAguaUrl,
+                    //     'reciboTelefonoUrl' : me.reciboTelefonoUrl,
+                    //     'pagareUrl' : me.pagareUrl,
+                    //     'comentario': me.comentario,
+                    //     'estado' : "Aprobado"
+                    // }
+                    ,configuracion).then(function(response){
                         me.close();
                         me.listar();
                         me.limpiar();                        
@@ -285,6 +346,7 @@
             },
             activarDesactivarCerrar(){
                 this.adModal=0;
+                this.imgModal = 0;
             },
             activar(){
                 let me=this;
