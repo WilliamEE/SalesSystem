@@ -8,7 +8,7 @@ namespace APISalesSystem.Controllers
 {
     public class UsuarioFirebaseDecodificado
     {
-        public async Task<UsuarioFirebase> obtener_usuario(string idToken) 
+        public async Task<UsuarioFirebase> obtener_usuario(string idToken)
         {
             UsuarioFirebase usuario = new UsuarioFirebase();
             FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken);
