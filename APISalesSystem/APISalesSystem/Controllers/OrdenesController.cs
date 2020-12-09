@@ -41,7 +41,20 @@ namespace APISalesSystem.Controllers
             {
                 return NotFound();
             }
+            orden.LineaDeOrden = _context.LineaDeOrden.Where(l => l.OrdenId == id).ToList();
             return orden;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Orden>>> GetOrdenes([FromHeader] string authorization) {
+            string idToken = authorization.Remove(0, 7);
+            usuario = await autenticar.obtener_usuario(idToken);
+
+            var ordenes = _context.Orden.Where(o => o.UsuarioId == usuario.Uid).ToList();
+            foreach (var orden in ordenes) {
+                orden.LineaDeOrden = _context.LineaDeOrden.Where(l => l.OrdenId == orden.Id).ToList();
+            }
+            return ordenes;
         }
     }
 }
