@@ -117,10 +117,52 @@ namespace APISalesSystem.Controllers
             return NoContent();
         }
 
-        // POST: api/SolicitudDeAfiliacion
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Route("GestionarSolicitud")]
+        public async Task<IActionResult> PostSolicitudDeAfiliacion(int id, string estado, [FromHeader] string Authorization)
+        {
+            string idToken = Authorization.Remove(0, 7);
+            usuario = await autenticar.obtener_usuario(idToken);
+            var solicitudDeAfiliacion = new SolicitudDeAfiliacion();
+            solicitudDeAfiliacion = await _context.SolicitudDeAfiliacion.Where(c => c.Id == id).FirstOrDefaultAsync();
+            if (id != solicitudDeAfiliacion.Id)
+            {
+                return BadRequest();
+            }
+            //if (estado == "Aprobado" && solicitudDeAfiliacion.Comentario == "")
+            if (estado == "Aprobado" )
+            {
+                solicitudDeAfiliacion.Estado = "Aprobado";
+                solicitudDeAfiliacion.Comentario = "Bienviendo nuevo vendedor, es un placer contar contigo.";
+            }
+            else if (solicitudDeAfiliacion.Estado == "Denegado" && solicitudDeAfiliacion.Comentario == "")
+            {
+                solicitudDeAfiliacion.Comentario = "Su solicitud ha sido denegada";
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SolicitudDeAfiliacionExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+            // POST: api/SolicitudDeAfiliacion
+            // To protect from overposting attacks, enable the specific properties you want to bind to, for
+            // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+            [HttpPost]
         public async Task<ActionResult<SolicitudDeAfiliacion>> PostSolicitudDeAfiliacion(SolicitudDeAfiliacion solicitudDeAfiliacion, [FromHeader] string Authorization)
         {
             string idToken = Authorization.Remove(0, 7);
